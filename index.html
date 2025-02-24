@@ -4,28 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markdown Viewer</title>
+    
+    <!-- marked.js (Markdown을 HTML로 변환) -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- highlight.js (코드 블록 하이라이트) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    
+    <!-- GitHub Markdown 스타일 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+    
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: auto;
+            display: flex;
+            justify-content: center;
             padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .markdown-body {
+            max-width: 900px;
+            min-width: 300px;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        pre code {
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
         }
     </style>
 </head>
 <body>
 
-    <h2>Markdown Viewer</h2>
-    <div id="content">Loading...</div>
+    <article id="content" class="markdown-body">Loading...</article>
 
     <script>
         async function loadMarkdown() {
             try {
-                const response = await fetch('README.md'); // 같은 폴더에 있는 example.md 로드
+                const response = await fetch('README.md'); // 같은 폴더의 README.md 로드
                 if (!response.ok) throw new Error("Markdown 파일을 불러올 수 없습니다.");
                 const text = await response.text();
                 document.getElementById('content').innerHTML = marked.parse(text);
+
+                // 코드 블록 하이라이트 적용
+                document.querySelectorAll("pre code").forEach(block => {
+                    hljs.highlightElement(block);
+                });
+
             } catch (error) {
                 document.getElementById('content').innerHTML = `<p style="color:red;">오류: ${error.message}</p>`;
             }
